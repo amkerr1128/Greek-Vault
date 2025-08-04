@@ -1,0 +1,41 @@
+.purchases-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.purchases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.purchase-card {
+  display: flex;
+  gap: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  align-items: center;
+  background-color: #f9f9f9;
+}
+
+.purchase-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.purchase-info h3 {
+  margin: 0 0 8px;
+}
+
+.purchase-info p {
+  margin: 4px 0;
+}
+
+.purchase-info .date {
+  font-size: 0.9em;
+  color: gray;
+}

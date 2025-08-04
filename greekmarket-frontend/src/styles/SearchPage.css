@@ -1,0 +1,33 @@
+.search-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.search-form button {
+  padding: 10px 16px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.search-results h3 {
+  margin-top: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
