@@ -1,5 +1,9 @@
 from flask import Blueprint, request, jsonify, request
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import (
+    create_access_token, create_refresh_token,
+    jwt_required, get_jwt_identity,
+    set_refresh_cookies, unset_jwt_cookies
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import cloudinary
@@ -44,7 +48,8 @@ def serialize_post(post):
         "chapter_id": post.chapter_id,
         "is_sold": post.is_sold,
         "visibility": post.visibility,
-        "created_at": post.created_at.isoformat()
+        "created_at": post.created_at.isoformat(),
+        "main_image_url": post.images[0].url if post.images else None
     }
 
 bp = Blueprint('main', __name__)
@@ -94,20 +99,24 @@ def register_user():
 
     return jsonify({"message": "User registered on GreekVault!", "user_id": user.user_id}), 201
 
-# ✅ Login user
 @bp.route("/login", methods=["POST"])
 def login_user():
     data = request.get_json()
     user = User.query.filter_by(email=data.get("email")).first()
 
     if user and check_password_hash(user.password_hash, data.get("password")):
-        token = create_access_token(identity=str(user.user_id))
-        return jsonify(access_token=token), 200
+        access_token = create_access_token(identity=str(user.user_id))
+        refresh_token = create_refresh_token(identity=str(user.user_id))
+
+        resp = jsonify(access_token=access_token)
+        # HttpOnly cookie carries the refresh token (browser stores it automatically)
+        set_refresh_cookies(resp, refresh_token)
+        return resp, 200
 
     return jsonify({"error": "Invalid credentials"}), 401
 
 
-# ✅ Get current user profile (JWT required)
+
 @bp.route("/me", methods=["GET"])
 @jwt_required()
 def get_profile():
@@ -117,7 +126,31 @@ def get_profile():
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    return jsonify(serialize_user(user))
+    # Get first chapter membership if exists
+    membership = UserChapterMembership.query.filter_by(user_id=user.user_id).first()
+    chapter_name = None
+    chapter_id = None
+    chapter_role = None
+    if membership:
+        chapter = Chapter.query.get(membership.chapter_id)
+        if chapter:
+            chapter_name = chapter.name
+            chapter_id = chapter.chapter_id
+            chapter_role = membership.role
+
+    return jsonify({
+        "user_id": user.user_id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "handle": user.handle,
+        "school_id": user.school_id,
+        "profile_picture_url": user.profile_picture_url,
+        "stripe_account_id": user.stripe_account_id,
+        "chapter_id": chapter_id,
+        "chapter_name": chapter_name,
+        "chapter_role": chapter_role
+    })
 
 @bp.route("/posts", methods=["POST"])
 @jwt_required()
@@ -1214,3 +1247,16 @@ def get_my_purchases():
         })
 
     return jsonify(results), 200
+
+@bp.route("/token/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh_access_token():
+    user_id = get_jwt_identity()
+    new_access = create_access_token(identity=str(user_id))
+    return jsonify(access_token=new_access), 200
+
+@bp.route("/logout", methods=["POST"])
+def logout():
+    resp = jsonify({"message": "Logged out"})
+    unset_jwt_cookies(resp)
+    return resp, 200

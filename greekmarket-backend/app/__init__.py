@@ -2,8 +2,9 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from config import Config  # ✅ Correct for root-level config.py
+from config import Config
 from dotenv import load_dotenv
+from flask_cors import CORS
 load_dotenv()
 import cloudinary
 import os
@@ -15,6 +16,13 @@ jwt = JWTManager()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    CORS(
+    app,
+    origins=["http://localhost:5173"],
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization"],  # <- allow bearer header
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    )
 
     db.init_app(app)
     migrate.init_app(app, db)

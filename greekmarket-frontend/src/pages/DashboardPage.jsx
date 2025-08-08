@@ -1,98 +1,121 @@
 // src/pages/DashboardPage.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
-import "./DashboardPage.css";
+import API from "../api/axios";
+import logout from "../utils/logout";
+import "../styles/DashboardPage.css";
 
-function DashboardPage() {
-  const [userData, setUserData] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [showMenu, setShowMenu] = useState(false);
+export default function DashboardPage() {
+  const [user, setUser] = useState(null);
+  const [err, setErr] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const fetchDashboardData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-
-      const userRes = await api.get("/me", config);
-      setUserData(userRes.data);
-
-      const postRes = await api.get("/my-posts", config);
-      setPosts(postRes.data);
-    } catch (err) {
-      console.error("Error loading dashboard:", err);
-      navigate("/login");
-    }
-  };
-
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const handleAccountSetup = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const res = await api.post("/create-account-link", {}, config);
-      window.location.href = res.data.url;
-    } catch (err) {
-      console.error("Error setting up Stripe account:", err);
-      alert("Failed to initiate Stripe onboarding.");
-    }
-  };
-
-  if (!userData) return <p>Loading...</p>;
+    (async () => {
+      try {
+        const { data } = await API.get("/me");
+        setUser(data);
+      } catch (e) {
+        const status = e?.response?.status;
+        const msg = e?.response?.data?.error || "Could not load your profile.";
+        setErr(msg);
+        if (status === 401) {
+          localStorage.removeItem("token");
+          setTimeout(() => navigate("/login"), 600);
+        }
+      }
+    })();
+  }, [navigate]);
 
   return (
-    <div className="dashboard">
-      <div className="header">
-        <div>
-          <h2>{userData.first_name} {userData.last_name}</h2>
-          <p>@{userData.handle}</p>
-          <p>{userData.chapter_name}</p>
-        </div>
-        <img
-          src={userData.profile_picture_url || "/default-profile.png"}
-          alt="Profile"
-          className="profile-pic"
-        />
-        <div className="menu-icon" onClick={() => setShowMenu(!showMenu)}>
-          &#9776;
-        </div>
-      </div>
+    <div className="dashboard-container">
+      {/* Header */}
+      <header className="dashboard-header">
+        <img src="/greekvault-logo.png" alt="GreekVault" className="dashboard-logo" />
+        <h2>Dashboard</h2>
+        <button
+          className="menu-btn"
+          aria-label="Open menu"
+          onClick={() => setMenuOpen(true)}
+        >
+          ☰
+        </button>
+      </header>
 
-      {showMenu && (
-        <div className="dropdown-menu">
-          <button onClick={() => navigate("/purchases")}>My Purchases</button>
-          <button onClick={() => navigate("/edit-profile")}>Edit Profile</button>
-        </div>
+      {!user && !err && <div className="dashboard-loading">Loading…</div>}
+      {err && <p className="dashboard-error">{err}</p>}
+
+      {user && (
+        <>
+          {/* Profile card */}
+          <section className="profile-card">
+            <img
+              src={user.profile_picture_url || "/default-avatar.png"}
+              alt={`${user.first_name} ${user.last_name}`}
+              className="profile-avatar"
+            />
+            <div className="profile-meta">
+              <h3>{user.first_name} {user.last_name}</h3>
+              <p>@{user.handle}</p>
+              {user.chapter_name && (
+                <p className="profile-chapter">
+                  {user.chapter_name} ({user.chapter_role})
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* Quick actions */}
+          <section className="quick-actions">
+            <a className="qa-btn primary" href="/create">Create Post</a>
+            {!user.stripe_account_id && (
+              <a className="qa-btn warn" href="/account">Complete Account Setup</a>
+            )}
+          </section>
+
+          {/* Recent posts placeholder */}
+          <section className="dashboard-section">
+            <h4>Your recent posts</h4>
+            <p className="muted">Coming soon — we’ll list your last few posts here.</p>
+          </section>
+        </>
       )}
 
-      <div className="dashboard-buttons">
-        <button onClick={() => navigate("/create-post")}>Create Post</button>
-        {!userData.stripe_account_id && (
-          <button onClick={handleAccountSetup} className="setup-btn">
-            Complete Account Setup
-          </button>
-        )}
-      </div>
-
-      <h3>Recent Posts</h3>
-      <div className="post-grid">
-        {posts.length === 0 ? (
-          <p>No posts yet.</p>
-        ) : (
-          posts.map((post) => (
-            <div key={post.post_id} className="post-card">
-              <img src={post.image_url || "/placeholder.png"} alt="Post" />
-              <p>{post.title}</p>
-            </div>
-          ))
-        )}
-      </div>
+      {/* Bottom sheet menu */}
+      {menuOpen && (
+        <>
+          <div className="dash-backdrop" onClick={() => setMenuOpen(false)} />
+          <div className="dash-sheet" role="dialog" aria-modal="true">
+            <div className="dash-grabber" />
+            <button
+              className="sheet-item"
+              onClick={() => { setMenuOpen(false); navigate("/purchases"); }}
+            >
+              Purchases
+            </button>
+            <button
+              className="sheet-item"
+              onClick={() => { setMenuOpen(false); navigate("/search"); }}
+            >
+              Search
+            </button>
+            <button
+              className="sheet-item"
+              onClick={() => { setMenuOpen(false); navigate("/create"); }}
+            >
+              Create Post
+            </button>
+            <hr className="sheet-sep" />
+            <button className="sheet-item danger" onClick={logout}>
+              Log out
+            </button>
+            <button className="sheet-cancel" onClick={() => setMenuOpen(false)}>
+              Cancel
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
-
-export default DashboardPage;

@@ -1,56 +1,74 @@
 // src/pages/LoginPage.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../api/axios";
-import "./LoginPage.css";
+import "../styles/LoginPage.css";
 
-function LoginPage() {
+export default function LoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const navigate = useNavigate();
-
-  const handleLogin = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setErrorMsg("");
-
+    setError("");
+    setSubmitting(true);
     try {
-      const response = await API.post("/login", { email, password });
-      localStorage.setItem("token", response.data.access_token);
-      navigate("/dashboard");
+      const { data } = await API.post("/login", { email, password });
+      // Save short-lived access token (refresh cookie is HttpOnly & automatic)
+      localStorage.setItem("token", data.access_token);
+      navigate("/browse");
     } catch (err) {
-      setErrorMsg(err.response?.data?.msg || "Login failed.");
+      const msg =
+        err?.response?.data?.error ||
+        "Login failed. Please check your email and password.";
+      setError(msg);
+    } finally {
+      setSubmitting(false);
     }
-  };
+  }
 
   return (
     <div className="auth-container">
-      <form className="auth-form" onSubmit={handleLogin}>
-        <h2>Login to GreekMarket</h2>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <h2>Login to GreekVault</h2>
+
         <input
           type="email"
           placeholder="Email"
-          required
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
+
         <input
           type="password"
           placeholder="Password"
-          required
+          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
-        <button type="submit">Log In</button>
-        {errorMsg && <p className="error">{errorMsg}</p>}
+
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Logging in…" : "Log In"}
+        </button>
+
+        {error && <div className="error">{error}</div>}
+
         <div className="links">
-          <button type="button" onClick={() => alert("Coming soon!")}>Forgot Password?</button>
-          <button type="button" onClick={() => navigate("/signup")}>Sign Up</button>
+          <button
+            type="button"
+            onClick={() => alert("Forgot password flow coming soon")}
+          >
+            Forgot Password?
+          </button>
+          <Link to="/signup">Sign Up</Link>
         </div>
       </form>
     </div>
   );
 }
-
-export default LoginPage;
