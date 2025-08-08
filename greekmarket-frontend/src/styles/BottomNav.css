@@ -1,36 +1,31 @@
+/* src/components/BottomNav.css */
 .bottom-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background-color: #fff;
-  border-top: 1px solid #e6e6e6;
+  bottom: 0; left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  z-index: 100;
+  padding: 10px 0;
+  z-index: 1000;
 }
 
-.bottom-nav button {
-  background: none;
-  border: none;
-  outline: none;
-  cursor: pointer;
+.bottom-nav .nav-item {
   display: flex;
-  flex-direction: column;
+  gap: 6px;
   align-items: center;
-  font-size: 12px;
-  color: #888;
-  transition: color 0.2s ease;
+  justify-content: center;
+  color: #1f2937;         /* dark text on light */
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 10px;
 }
 
-.bottom-nav button:hover,
-.bottom-nav button.active {
-  color: #4a63e7;
-}
-
-.bottom-nav svg {
-  font-size: 20px;
-  margin-bottom: 3px;
+.bottom-nav .nav-item.active {
+  color: #6d5cff;
+  background: #f3f0ff;
 }
