@@ -1,0 +1,83 @@
+/* src/styles/ChapterPage.css */
+.chapter-page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px 16px 88px;
+}
+
+/* Header */
+.cp-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.cp-left { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+.cp-avatar {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: #eef2ff; color: #1e2a78; display: grid; place-items: center;
+  font-weight: 800; font-size: 20px; letter-spacing: 1px; text-transform: uppercase;
+}
+.cp-title h1 { margin: 0; font-size: 28px; line-height: 1.2; }
+.cp-sub { margin-top: 2px; color: #6b7280; }
+.cp-right { display: flex; gap: 8px; }
+
+/* Buttons (reuse look from school page) */
+.btn { border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer; font-weight: 600; }
+.btn.ghost { background: #f3f4f6; color: #111827; }
+.btn.primary { background: #6d58ff; color: #fff; }
+.btn.success { background: #22c55e; color: #fff; }
+
+.cp-loading, .cp-error { color: #6b7280; }
+
+/* Stats */
+.cp-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 12px 0 16px;
+}
+.stat-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.stat-value { font-size: 20px; font-weight: 700; }
+.stat-label { color: #6b7280; font-size: 13px; }
+
+/* Sections */
+.cp-section { margin-top: 14px; }
+.cp-section-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.cp-section-head h3 { margin: 0; }
+.muted { color: #6b7280; font-size: 13px; font-weight: 500; }
+
+/* Posts grid (card style matches your existing cards) */
+.cp-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+.post-card {
+  display: grid; grid-template-columns: 96px 1fr; gap: 10px;
+  padding: 10px; border: 1px solid #e5e7eb; border-radius: 14px; background: #fff;
+  text-decoration: none; color: inherit; transition: transform .15s ease, box-shadow .15s ease;
+}
+.post-card:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,.06); }
+.post-thumb { width: 96px; height: 72px; border-radius: 10px; overflow: hidden; background: #f3f4f6; display: grid; place-items: center; }
+.post-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb-fallback { color: #6b7280; font-size: 12px; }
+.post-title { font-weight: 700; margin-bottom: 4px; }
+.post-sub { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { background: #e5e7eb; color: #111827; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+.pill.handle { background: #eef2ff; color: #1e2a78; }
+
+/* Members list */
+.cp-members { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.member-row { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; padding: 10px; border: 1px solid #e5e7eb; border-radius: 12px; background: #fff; }
+.member-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+.member-name { font-weight: 600; }
+.member-role { color: #6b7280; font-size: 12px; }
+
+.cp-empty { color: #6b7280; }

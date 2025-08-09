@@ -1,37 +1,118 @@
-.create-post-container {
-  max-width: 500px;
-  margin: auto;
-  padding: 20px;
+/* src/styles/CreatePostPage.css */
+
+/* Wrapper centers the card on the page */
+.create-post-wrap {
+  min-height: calc(100vh - 72px);
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: #f6f7fb;
+}
+
+/* Card container */
+.create-card {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border: 1px solid #ececf5;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 28px rgba(17, 24, 39, 0.08);
+}
+
+/* Title */
+.create-title {
+  margin: 0 0 12px 0;
   text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #14151a;
 }
 
-.create-post-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Field stack */
+.field {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.create-post-form input,
-.create-post-form textarea {
-  padding: 10px;
-  font-size: 16px;
+.field > span {
+  font-size: 13px;
+  color: #5b6275;
 }
 
-.create-post-form button {
-  padding: 10px;
-  font-size: 16px;
-  background-color: #28a745;
-  color: white;
-  border: none;
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid #e1e4ee;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: #14151a;
+  background: #fff;
+  outline: none;
+  transition: border-color .15s ease;
+}
+
+.field textarea { resize: vertical; }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: #8c52ff;
+}
+
+/* Buttons (scoped so we don't affect other pages) */
+.create-card .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #e1e4ee;
+  background: #fff;
+  color: #14151a;
+  font-weight: 600;
   cursor: pointer;
+  transition: box-shadow .15s ease, background .15s ease, transform .02s ease;
+  text-decoration: none;
 }
 
-.error {
-  color: red;
-  margin-top: 10px;
+.create-card .btn:hover {
+  box-shadow: 0 4px 14px rgba(17, 24, 39, 0.08);
 }
 
-.success {
-  color: green;
+.create-card .btn.primary {
+  background: #8c52ff;
+  color: #fff;
+  border-color: #8c52ff;
+}
+
+.create-card .btn.primary:hover {
+  background: #7b3dff;
+  border-color: #7b3dff;
+}
+
+.create-card .btn.block { width: 100%; }
+
+/* Helper text */
+.muted { color: #6b7280; }
+.small { font-size: 12px; }
+.mt { margin-top: 10px; }
+.ok { color: #087443; }
+.error { color: #d70022; }
+
+/* Gating card */
+.gate-card {
+  border: 1px solid #ececf5;
+  background: #fafafe;
+  padding: 16px;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+.gate-actions {
+  display: flex;
+  gap: 10px;
   margin-top: 10px;
 }

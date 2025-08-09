@@ -1,0 +1,85 @@
+/* src/styles/UserProfilePage.css */
+.page-wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px 16px 96px;
+  color: #0f172a;
+}
+
+.header-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f1f5f9;
+}
+
+.meta h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.meta .handle {
+  color: #475569;
+  font-size: 14px;
+}
+
+.action-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.primary {
+  background: #6d28d9;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.secondary {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.section {
+  margin-top: 22px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+}
+.section h3 {
+  margin: 0 0 10px;
+}
+
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.empty {
+  color: #64748b;
+  margin: 12px 0 4px;
+}
+.hint {
+  color: #94a3b8;
+  font-size: 12px;
+}
